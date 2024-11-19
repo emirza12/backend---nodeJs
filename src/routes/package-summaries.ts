@@ -1,9 +1,8 @@
 import { Router, Request, Response } from 'express';
-import learningPackages from '../data/learningpackage';
+import { Op } from 'sequelize';
+import { LearningPackage } from '../models/LearningPackage'; // Ensure the model path is correct
 
 const router: Router = Router();
-  
-
 
 /**
  * @openapi
@@ -30,13 +29,17 @@ const router: Router = Router();
  *                     description: The title of the LearningPackage.
  *                     example: Learn TypeScript
  */
-  // GET /api/package-summaries - Retrieve summaries of all LearningPackages
-router.get('/', (req: Request, res: Response) => {
-    const summaries = learningPackages.map(lp => ({ id: lp.id, title: lp.title }));
+// GET /api/package-summaries - Retrieve summaries of all LearningPackages
+router.get('/', async (req: Request, res: Response) => {
+  try {
+    const summaries = await LearningPackage.findAll({
+      attributes: ['id', 'title'], // Only fetch id and title
+    });
     res.status(200).json(summaries);
-  });
-
-
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving data', details: (error as Error).message });
+  }
+});
 
 /**
  * @openapi
@@ -74,28 +77,32 @@ router.get('/', (req: Request, res: Response) => {
  *                 $ref: '#/components/schemas/LearningPackage'
  */
 // GET /api/package-summaries/search - Search for LearningPackages based on query parameters
-router.get('/search', (req: Request, res: Response) => {
+router.get('/search', async (req: Request, res: Response) => {
   const { title, description, category } = req.query;
 
-  // Filter the packages based on query parameters
-  const filteredPackages = learningPackages.filter(lp => {
-    const matchesTitle = title
-      ? lp.title.toLowerCase().includes((title as string).toLowerCase())
-      : true;
-    const matchesDescription = description
-      ? lp.description.toLowerCase().includes((description as string).toLowerCase())
-      : true;
-    const matchesCategory = category
-      ? lp.category.toLowerCase().includes((category as string).toLowerCase())
-      : true;
+  try {
+    const where: any = {};
 
-    return matchesTitle && matchesDescription && matchesCategory;
-  });
+    // Build the WHERE clause based on query parameters
+    if (title) {
+      where.title = { [Op.iLike]: `%${title}%` }; // Case-insensitive LIKE
+    }
+    if (description) {
+      where.description = { [Op.iLike]: `%${description}%` };
+    }
+    if (category) {
+      where.category = { [Op.iLike]: `%${category}%` };
+    }
 
-  // Return only summaries (id and title)
-  const summaries = filteredPackages.map(lp => ({ id: lp.id, title: lp.title }));
-  res.status(200).json(summaries);
+    const filteredPackages = await LearningPackage.findAll({
+      where,
+      attributes: ['id', 'title'], // Only fetch id and title for summaries
+    });
+
+    res.status(200).json(filteredPackages);
+  } catch (error) {
+    res.status(500).json({ message: 'Error filtering data', details: (error as Error).message });
+  }
 });
 
-  export default router;
-  
+export default router;

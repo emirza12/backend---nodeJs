@@ -1,10 +1,17 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const learningpackage_1 = __importDefault(require("../data/learningpackage"));
+const sequelize_1 = require("sequelize");
+const LearningPackage_1 = require("../models/LearningPackage"); // Ensure the model path is correct
 const router = (0, express_1.Router)();
 /**
  * @openapi
@@ -32,10 +39,17 @@ const router = (0, express_1.Router)();
  *                     example: Learn TypeScript
  */
 // GET /api/package-summaries - Retrieve summaries of all LearningPackages
-router.get('/', (req, res) => {
-    const summaries = learningpackage_1.default.map(lp => ({ id: lp.id, title: lp.title }));
-    res.status(200).json(summaries);
-});
+router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const summaries = yield LearningPackage_1.LearningPackage.findAll({
+            attributes: ['id', 'title'], // Only fetch id and title
+        });
+        res.status(200).json(summaries);
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error retrieving data', details: error.message });
+    }
+}));
 /**
  * @openapi
  * /search:
@@ -72,23 +86,28 @@ router.get('/', (req, res) => {
  *                 $ref: '#/components/schemas/LearningPackage'
  */
 // GET /api/package-summaries/search - Search for LearningPackages based on query parameters
-router.get('/search', (req, res) => {
+router.get('/search', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, description, category } = req.query;
-    // Filter the packages based on query parameters
-    const filteredPackages = learningpackage_1.default.filter(lp => {
-        const matchesTitle = title
-            ? lp.title.toLowerCase().includes(title.toLowerCase())
-            : true;
-        const matchesDescription = description
-            ? lp.description.toLowerCase().includes(description.toLowerCase())
-            : true;
-        const matchesCategory = category
-            ? lp.category.toLowerCase().includes(category.toLowerCase())
-            : true;
-        return matchesTitle && matchesDescription && matchesCategory;
-    });
-    // Return only summaries (id and title)
-    const summaries = filteredPackages.map(lp => ({ id: lp.id, title: lp.title }));
-    res.status(200).json(summaries);
-});
+    try {
+        const where = {};
+        // Build the WHERE clause based on query parameters
+        if (title) {
+            where.title = { [sequelize_1.Op.iLike]: `%${title}%` }; // Case-insensitive LIKE
+        }
+        if (description) {
+            where.description = { [sequelize_1.Op.iLike]: `%${description}%` };
+        }
+        if (category) {
+            where.category = { [sequelize_1.Op.iLike]: `%${category}%` };
+        }
+        const filteredPackages = yield LearningPackage_1.LearningPackage.findAll({
+            where,
+            attributes: ['id', 'title'], // Only fetch id and title for summaries
+        });
+        res.status(200).json(filteredPackages);
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error filtering data', details: error.message });
+    }
+}));
 exports.default = router;
