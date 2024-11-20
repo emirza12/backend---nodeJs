@@ -22,5 +22,6 @@ LearningPackage.init({
     modelName: 'LearningPackage',
     tableName: 'LearningFactDb'
 });
+exports.default = LearningPackage;
 // To ensure the table is created, you might want to sync in development:
 seque_1.default.sync({ alter: true });

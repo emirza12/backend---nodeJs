@@ -8,6 +8,7 @@ const liveness_1 = __importDefault(require("./src/routes/liveness"));
 const package_1 = __importDefault(require("./src/routes/package"));
 const package_summaries_1 = __importDefault(require("./src/routes/package-summaries"));
 const swagger_1 = require("./src/swagger");
+const packageFact_1 = __importDefault(require("./src/routes/packageFact"));
 const app = (0, express_1.default)();
 const PORT = 3000;
 // Middleware (optional)
@@ -18,6 +19,7 @@ app.use(express_1.default.json());
 app.use('/api/liveness', liveness_1.default);
 app.use('/api/package', package_1.default);
 app.use('/api/package-summaries', package_summaries_1.default);
+app.use('/api/packageFact', packageFact_1.default);
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

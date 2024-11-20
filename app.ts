@@ -3,6 +3,7 @@ import livenessRouter from './src/routes/liveness';
 import packageRouter from './src/routes/package';
 import packageSummariesRouter from './src/routes/package-summaries';
 import { setupSwagger } from './src/swagger';
+import packageFact from './src/routes/packageFact';
 
 const app: Application = express();
 const PORT = 3000;
@@ -17,6 +18,7 @@ setupSwagger(app);
 app.use('/api/liveness', livenessRouter);
 app.use('/api/package', packageRouter);
 app.use('/api/package-summaries', packageSummariesRouter);
+app.use('/api/packageFact', packageFact);
 
 // Start server
 app.listen(PORT, () => {

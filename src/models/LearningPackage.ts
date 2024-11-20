@@ -24,5 +24,7 @@ LearningPackage.init({
     tableName: 'LearningFactDb' 
 });
 
+export default LearningPackage;
+
 // To ensure the table is created, you might want to sync in development:
 sequelize.sync({ alter: true });
