@@ -5,7 +5,7 @@ const router: Router = Router();
 
 /**
  * @openapi
- * /:
+ * /api/liveness:
  *   get:
  *     summary: Health check endpoint
  *     description: Returns a status message to indicate that the server is running.

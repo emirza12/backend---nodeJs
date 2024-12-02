@@ -19,7 +19,7 @@ app.use(express_1.default.json());
 app.use('/api/liveness', liveness_1.default);
 app.use('/api/package', package_1.default);
 app.use('/api/package-summaries', package_summaries_1.default);
-app.use('/api/packageFact', packageFact_1.default);
+app.use('/api/package', packageFact_1.default);
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

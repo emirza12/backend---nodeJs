@@ -1,11 +1,7 @@
 import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
-
-// Load environment variables from .env file
-dotenv.config();
 
 // Create a new Sequelize instance
-const sequelize = new Sequelize('LearningFactDb', 'postgres', (String(process.env.DB_PASSWORD)), {
+const sequelize = new Sequelize('LearningFactDb', 'postgres', 'database', {
     host: 'localhost',
     dialect: 'postgres',
     logging: console.log,

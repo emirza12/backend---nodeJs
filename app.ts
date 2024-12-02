@@ -18,7 +18,7 @@ setupSwagger(app);
 app.use('/api/liveness', livenessRouter);
 app.use('/api/package', packageRouter);
 app.use('/api/package-summaries', packageSummariesRouter);
-app.use('/api/packageFact', packageFact);
+app.use('/api/package', packageFact);
 
 // Start server
 app.listen(PORT, () => {

@@ -11,14 +11,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const sequelize_1 = require("sequelize");
-const LearningPackage_1 = require("../models/LearningPackage"); // Ensure the model path is correct
+const LearningPackage_1 = require("../models/LearningPackage"); // Assurez-vous que le chemin du modèle est correct
 const router = (0, express_1.Router)();
 /**
- * @openapi
- * /:
+ * @swagger
+ * /api/package-summaries:
  *   get:
  *     summary: Get summaries of LearningPackages
  *     description: Returns a list of all LearningPackages with only their IDs and titles.
+ *     tags:
+ *       - Package Summaries
  *     responses:
  *       200:
  *         description: A list of LearningPackage summaries.
@@ -37,8 +39,9 @@ const router = (0, express_1.Router)();
  *                     type: string
  *                     description: The title of the LearningPackage.
  *                     example: Learn TypeScript
+ *       500:
+ *         description: Error retrieving data.
  */
-// GET /api/package-summaries - Retrieve summaries of all LearningPackages
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const summaries = yield LearningPackage_1.LearningPackage.findAll({
@@ -51,26 +54,31 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 }));
 /**
- * @openapi
- * /search:
+ * @swagger
+ * /api/packagesummaries/search?title=..&description=..&tag=..:
  *   get:
  *     summary: Search LearningPackages
  *     description: Filters LearningPackages by title, description, or category.
+ *     tags:
+ *       - Package Summaries
  *     parameters:
  *       - name: title
  *         in: query
+ *         required: false
  *         schema:
  *           type: string
  *         description: Filter by title (partial, case-insensitive).
  *         example: Learn
  *       - name: description
  *         in: query
+ *         required: false
  *         schema:
  *           type: string
  *         description: Filter by description (partial, case-insensitive).
  *         example: Advanced
  *       - name: category
  *         in: query
+ *         required: false
  *         schema:
  *           type: string
  *         description: Filter by category (partial, case-insensitive).
@@ -83,9 +91,19 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/LearningPackage'
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: The ID of the LearningPackage.
+ *                     example: 1
+ *                   title:
+ *                     type: string
+ *                     description: The title of the LearningPackage.
+ *                     example: Learn TypeScript
+ *       500:
+ *         description: Error filtering data.
  */
-// GET /api/package-summaries/search - Search for LearningPackages based on query parameters
 router.get('/search', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, description, category } = req.query;
     try {

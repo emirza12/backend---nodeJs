@@ -17,8 +17,37 @@ const LearningFact_1 = __importDefault(require("../models/LearningFact"));
 const LearningPackage_1 = __importDefault(require("../models/LearningPackage"));
 const router = (0, express_1.Router)();
 /**
- * GET /api/package/:id/fact
- * Get all LearningFacts for a given package
+ * @swagger
+ * /api/package/{id}/fact:
+ *   get:
+ *     summary: Get all LearningFacts for a given package
+ *     tags:
+ *       - LearningFacts
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the package
+ *     responses:
+ *       200:
+ *         description: List of facts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   title:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *       500:
+ *         description: Error fetching facts
  */
 router.get('/:id/fact', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const packageId = parseInt(req.params.id, 10);
@@ -32,8 +61,37 @@ router.get('/:id/fact', (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 }));
 /**
- * POST /api/package/:id/fact
- * Create and Add a new Fact to a given package
+ * @swagger
+ * /api/package/{id}/fact:
+ *   post:
+ *     summary: Create and add a new fact to a package
+ *     tags:
+ *       - LearningFacts
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the package
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Fact created successfully
+ *       404:
+ *         description: Package not found
+ *       500:
+ *         description: Error creating fact
  */
 router.post('/:id/fact', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const packageId = parseInt(req.params.id, 10);
@@ -52,8 +110,43 @@ router.post('/:id/fact', (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 }));
 /**
- * PUT /api/package/:id/fact/:factId
- * Update an existing Fact of a given package
+ * @swagger
+ * /api/package/{id}/fact/{factId}:
+ *   put:
+ *     summary: Update an existing fact of a package
+ *     tags:
+ *       - LearningFacts
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the package
+ *       - name: factId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the fact
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Fact updated successfully
+ *       404:
+ *         description: Fact not found
+ *       500:
+ *         description: Error updating fact
  */
 router.put('/:id/fact/:factId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const packageId = parseInt(req.params.id, 10);
@@ -75,8 +168,32 @@ router.put('/:id/fact/:factId', (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 }));
 /**
- * DELETE /api/package/:id/fact/:factId
- * Mark a Fact as disabled (soft delete)
+ * @swagger
+ * /api/package/{id}/fact/{factId}:
+ *   delete:
+ *     summary: Mark a fact as disabled (soft delete)
+ *     tags:
+ *       - LearningFacts
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the package
+ *       - name: factId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the fact
+ *     responses:
+ *       200:
+ *         description: Fact marked as disabled
+ *       404:
+ *         description: Fact not found
+ *       500:
+ *         description: Error deleting fact
  */
 router.delete('/:id/fact/:factId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const packageId = parseInt(req.params.id, 10);

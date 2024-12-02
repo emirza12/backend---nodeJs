@@ -4,7 +4,7 @@ const express_1 = require("express");
 const router = (0, express_1.Router)();
 /**
  * @openapi
- * /:
+ * /api/liveness:
  *   get:
  *     summary: Health check endpoint
  *     description: Returns a status message to indicate that the server is running.
